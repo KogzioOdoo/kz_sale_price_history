@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+
+    <!-- 1. Add Price History button to Sale Order Lines -->
+    <record id="kz_sale_order_form_price_history" model="ir.ui.view">
+        <field name="name">sale.order.form.price.history</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+
+        <field name="arch" type="xml">
+
+            <xpath expr="//field[@name='order_line']/list/field[@name='product_uom_qty']"
+                   position="before">
+
+                <button
+                        name="action_kz_sales_price_history"
+                        type="object"
+                        string="Price History"
+                        icon="fa-line-chart"
+                        class="btn-link"
+                        invisible="not product_id"
+                />
+
+            </xpath>
+
+        </field>
+    </record>
+
+     <!-- 2. Add the popup list view for price history -->
+    <record id="kz_sale_price_history_list_view" model="ir.ui.view">
+        <field name="name">kz.sale.price.history.list</field>
+        <field name="model">sale.order.line</field>
+
+        <field name="arch" type="xml">
+            <list
+                    string="Price History"
+                    create="false"
+                    edit="false"
+                    delete="false"
+            >
+                <field name="order_id" string="Sales Order Number"/>
+                <field name="customer_id" string="Customer"/>
+                <field name="price_unit" string="Unit Price"/>
+                <field name="order_date" string="Order Date"/>
+            </list>
+        </field>
+    </record>
+    <!-- 3.Search view for customer specific view-->
+    <record id="kz_sale_price_history_search_view" model="ir.ui.view">
+    <field name="name">sale.order.line.price.history.search</field>
+    <field name="model">sale.order.line</field>
+    <field name="arch" type="xml">
+        <search>
+            <field name="customer_id"/>
+
+            <filter
+                name="customer"
+                string="Customer"
+                domain="[('customer_id', '=', context.get('default_customer_id'))]"
+            />
+        </search>
+    </field>
+</record>
+
+</odoo>
