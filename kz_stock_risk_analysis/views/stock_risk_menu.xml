@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+
+    <menuitem
+        id="menu_stock_risk_analysis"
+        name="Stock Risk Analysis"
+        parent="stock.menu_warehouse_report"
+        action="action_stock_risk_report"
+        sequence="240"
+    />
+
+</odoo>

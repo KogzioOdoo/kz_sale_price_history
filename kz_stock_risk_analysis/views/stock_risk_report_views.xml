@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+
+    <record id="view_stock_risk_report_list" model="ir.ui.view">
+        <field name="name">stock.risk.report.list</field>
+        <field name="model">stock.risk.report</field>
+        <field name="arch" type="xml">
+            <list string="Stock Risk Analysis">
+                <field name="product_id"/>
+                <field name="units_on_hand"/>
+                <field name="description"/>
+                <field
+                        name="status"
+                        widget="badge"
+                        decoration-danger="status == 'dead_stock'"
+                        decoration-warning="status == 'slow_mover'"
+                        decoration-info="status == 'overstock_risk'"
+                />
+
+            </list>
+        </field>
+    </record>
+
+    <record id="action_stock_risk_report" model="ir.actions.act_window">
+        <field name="name">Stock Risk Analysis</field>
+        <field name="res_model">stock.risk.report</field>
+        <field name="view_mode">list</field>
+    </record>
+
+</odoo>
