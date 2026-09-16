@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<templates xml:space="preserve">
+
+    <t
+        t-inherit="web.ListRenderer.RecordRow"
+        t-inherit-mode="extension"
+    >
+
+        <!-- ===================================================== -->
+        <!-- Expand / Collapse Button                              -->
+        <!-- ===================================================== -->
+
+        <xpath
+            expr="//t[@t-foreach='getColumns(record)']//td[@t-att-name='column.name']"
+            position="inside"
+        >
+
+            <!-- Put the button in the first actual field column. -->
+            <t
+                t-if="
+                    column_index === 0
+                    and hasExpandableRelations
+                    and record.resId
+                "
+            >
+
+                <button
+                    type="button"
+                    class="btn btn-link p-0 ms-1"
+                    t-on-click.stop="() => this.toggleRow(record)"
+                    t-att-title="
+                        expandableState.expandedRows[record.resId]
+                            ? 'Collapse'
+                            : 'Expand'
+                    "
+                    t-att-aria-label="
+                        expandableState.expandedRows[record.resId]
+                            ? 'Collapse'
+                            : 'Expand'
+                    "
+                >
+
+                    <i
+                        class="fa"
+                        t-att-class="{
+                            'fa-chevron-up':
+                                expandableState.expandedRows[record.resId],
+
+                            'fa-chevron-down':
+                                !expandableState.expandedRows[record.resId]
+                        }"
+                    />
+
+                </button>
+
+            </t>
+
+        </xpath>
+
+
+        <!-- ===================================================== -->
+        <!-- Expanded Related Records                              -->
+        <!-- ===================================================== -->
+
+        <xpath expr="//tr" position="after">
+
+            <tr
+                t-if="
+                    expandableState.expandedRows[record.resId]
+                    and expandableRelation
+                "
+                class="o_expandable_list_row"
+            >
+
+                <td t-att-colspan="getColumns(record).length + 1">
+
+                    <div class="o_expandable_content">
+
+                        <!-- ===================================== -->
+                        <!-- Field Selection                       -->
+                        <!-- ===================================== -->
+
+                        <div
+                            class="d-flex justify-content-end mb-2"
+                        >
+
+                            <div
+                                class="o_optional_columns_dropdown d-print-none text-center"
+                            >
+
+                                <Dropdown position="'bottom-end'">
+
+                                    <button
+                                        class="btn p-0"
+                                        tabindex="-1"
+                                        title="Select fields"
+                                        aria-label="Select fields"
+                                    >
+
+                                        <i
+                                            class="o_optional_columns_dropdown_toggle oi oi-fw oi-settings-adjust"
+                                        />
+
+                                    </button>
+
+
+                                    <t t-set-slot="content">
+
+                                        <t
+                                            t-foreach="expandableRelation.fields"
+                                            t-as="field"
+                                            t-key="field.name"
+                                        >
+
+                                            <DropdownItem
+                                                closingMode="'none'"
+                                                onSelected="
+                                                    () => this.toggleExpandableField(field.name)
+                                                "
+                                            >
+
+                                                <CheckBox
+                                                    onChange="
+                                                        () => this.toggleExpandableField(field.name)
+                                                    "
+                                                    value="
+                                                        this.isExpandableFieldSelected(field)
+                                                    "
+                                                    name="field.name"
+                                                >
+
+                                                    <span
+                                                        class="d-flex align-items-center"
+                                                    >
+
+                                                        <span
+                                                            class="text-truncate"
+                                                            t-esc="field.label"
+                                                        />
+
+                                                    </span>
+
+                                                </CheckBox>
+
+                                            </DropdownItem>
+
+                                        </t>
+
+                                    </t>
+
+                                </Dropdown>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- ===================================== -->
+                        <!-- Expanded Related Records Table       -->
+                        <!-- ===================================== -->
+
+                        <table class="o_expandable_lines_table">
+
+                            <!-- Dynamic column headers -->
+
+                            <thead>
+
+                                <tr>
+
+                                    <t
+                                        t-foreach="selectedExpandableFields"
+                                        t-as="field"
+                                        t-key="field.name"
+                                    >
+
+                                        <th>
+                                            <t t-esc="field.label"/>
+                                        </th>
+
+                                    </t>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <!-- Dynamic related records -->
+
+                            <tbody>
+
+                                <t
+                                    t-foreach="
+                                        expandableState.relatedRecords[record.resId]
+                                        || []
+                                    "
+                                    t-as="line"
+                                    t-key="line.id"
+                                >
+
+                                    <tr>
+
+                                        <t
+                                            t-foreach="selectedExpandableFields"
+                                            t-as="field"
+                                            t-key="field.name"
+                                        >
+
+                                            <td>
+
+                                                <span
+                                                    t-esc="
+                                                        getRelatedFieldValue(
+                                                            line,
+                                                            field
+                                                        )
+                                                    "
+                                                />
+
+                                            </td>
+
+                                        </t>
+
+                                    </tr>
+
+                                </t>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </td>
+
+            </tr>
+
+        </xpath>
+
+    </t>
+
+</templates>
