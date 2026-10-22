@@ -5,7 +5,7 @@
 {
     'name': 'Negative Stock Hunter',
     'version': '19.0.1.0.0',
-    'category': 'Inventory/Inventory',
+    'category': 'Warehouse',
     'summary': 'Find Negative stock and the last moves that caused it',
     'description': """
 Negative Stock Hunter
